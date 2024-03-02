@@ -4,11 +4,11 @@ using OrderManagementAPI.Infrostracture.Persistace;
 
 namespace OrderManagementAPI.Infrostracture.Repositories
 {
-    public class UserRepository:BaseRepository<UserModel>,IUserRepository
+    public class UserRepository : BaseRepository<UserModel>, IUserRepository
     {
-        public UserRepository(OrderManagmentDbContext context):base(context) 
+        public UserRepository(OrderManagmentDbContext context) : base(context)
         {
-            
+
         }
     }
 }

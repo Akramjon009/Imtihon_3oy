@@ -7,7 +7,7 @@ namespace OrderManagementAPI.Infrostracture
 {
     public static class DpendencyInjection
     {
-        public static IServiceCollection AddInfrastracture(this IServiceCollection services,IConfiguration conf) 
+        public static IServiceCollection AddInfrastracture(this IServiceCollection services, IConfiguration conf)
         {
             services.AddDbContext<OrderManagmentDbContext>(options =>
             {

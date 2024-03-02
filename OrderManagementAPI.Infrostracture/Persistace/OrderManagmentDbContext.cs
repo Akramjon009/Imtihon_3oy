@@ -3,13 +3,13 @@ using OrderManagementAPI.Domen.Entites.Models;
 
 namespace OrderManagementAPI.Infrostracture.Persistace
 {
-    public class OrderManagmentDbContext: DbContext
+    public class OrderManagmentDbContext : DbContext
     {
         public OrderManagmentDbContext(DbContextOptions<OrderManagmentDbContext> option)
-            :base(option)
-        { 
+            : base(option)
+        {
         }
         public virtual DbSet<UserModel> Users { get; set; }
-        public virtual DbSet<ProductModel> Products {  get; set; }
+        public virtual DbSet<ProductModel> Products { get; set; }
     }
 }
