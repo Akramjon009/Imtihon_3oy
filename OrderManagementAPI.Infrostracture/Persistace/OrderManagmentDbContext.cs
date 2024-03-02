@@ -10,6 +10,6 @@ namespace OrderManagementAPI.Infrostracture.Persistace
         { 
         }
         public virtual DbSet<UserModel> Users { get; set; }
-        public virtual DbSet<ProductModel> Product {  get; set; }
+        public virtual DbSet<ProductModel> Products {  get; set; }
     }
 }

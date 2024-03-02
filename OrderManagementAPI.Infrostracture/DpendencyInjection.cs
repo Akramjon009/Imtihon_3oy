@@ -12,8 +12,7 @@ namespace OrderManagementAPI.Infrostracture
             services.AddDbContext<OrderManagmentDbContext>(options =>
             {
                 options.UseNpgsql(conf.GetConnectionString("OrderConnectionString"));
-            }
-            );
+            });
 
             return services;
         }
