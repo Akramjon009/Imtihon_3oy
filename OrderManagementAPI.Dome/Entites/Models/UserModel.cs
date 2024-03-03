@@ -1,4 +1,6 @@
-﻿namespace OrderManagementAPI.Domen.Entites.Models
+﻿using OrderManagementAPI.Domen.Entites.Enums;
+
+namespace OrderManagementAPI.Domen.Entites.Models
 {
     public class UserModel
     {

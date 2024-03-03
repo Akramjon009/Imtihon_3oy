@@ -2,10 +2,12 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using OrderManagementAPI.Application.Abstractions.IService;
+using OrderManagementAPI.Domen.Entites.Models;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 namespace OrderManagementAPI.Application.Abstractions.Service.AuthService
 {
@@ -29,10 +31,21 @@ namespace OrderManagementAPI.Application.Abstractions.Service.AuthService
                     Token = "User Not Found"
                 };
             }
-
-            if (await UserExist(user))
+            var FindUser = await UserExist(user);
+            if (FindUser != null)
             {
-                var result = await _userService.GetByLogin(user.Login);
+                var result = await _userService.GetUserByLogin(user.Login);
+                var permission = new List<int>();
+
+                if (FindUser.Role.ToString() != "1")
+                {
+                    permission = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+                }
+                else
+                {
+                    permission = new List<int> { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+                }
+                var jsonContent = JsonSerializer.Serialize(permission);
 
                 List<Claim> claims = new List<Claim>()
                 {
@@ -40,6 +53,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service.AuthService
                     new Claim("Login", user.Login),
                     new Claim("UserID", result.Id.ToString()),
                     new Claim("CreatedDate", DateTime.UtcNow.ToString()),
+                    new Claim("Permissions", jsonContent)
                 };
 
                 return await GenerateToken(claims);
@@ -84,17 +98,17 @@ namespace OrderManagementAPI.Application.Abstractions.Service.AuthService
         }
 
 
-        public async Task<bool> UserExist(RequestLogin user)
+        public async Task<UserModel> UserExist(RequestLogin user)
         {
 
-            var result = await _userService.GetByLogin(user.Login);
+            var result = await _userService.GetUserByLogin(user.Login);
 
             if (user.Login == result.Login && user.Password == result.Password)
             {
-                return true;
+                return result;
             }
 
-            return false;
+            return result;
         }
     }
 }

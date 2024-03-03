@@ -19,10 +19,11 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             _productService = productService;
         }
 
-        public async Task<UserModel> Create(UserDTO userDTO)
+
+        public async Task<UserModel> CreateUser(UserDTO userDTO)
         {
-            
-            if (await Check(userDTO.Email,userDTO.Login))
+
+            if (await Check(userDTO.Email, userDTO.Login))
             {
                 var user = new UserModel()
                 {
@@ -41,7 +42,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
         }
 
 
-        public async Task<IEnumerable<UserViewModel>> GetAll()
+        public async Task<IEnumerable<UserViewModel>> GetAllUser()
         {
             var users = await _userRepository.GetAll();
 
@@ -55,7 +56,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return result;
         }
 
-        public async Task<UserModel> GetById(long Id)
+        public async Task<UserModel> GetUserById(long Id)
         {
             var user = await _userRepository.GetByAny(x => x.Id == Id);
             if (user != null)
@@ -64,7 +65,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             }
             return null;
         }
-        public async Task<UserModel> GetByLogin(string login)
+        public async Task<UserModel> GetUserByLogin(string login)
         {
             var user = await _userRepository.GetByAny(x => x.Login == login);
             if (user != null)
@@ -73,11 +74,11 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             }
             return null;
         }
-        public async Task<UserModel> Update(long Id, UserDTO userDTO)
+        public async Task<UserModel> UpdateUser(long Id, UserDTO userDTO)
         {
             if (await Check(userDTO.Email, userDTO.Login))
             {
-                var old = await _userRepository.GetByAny(x=>x.Id == Id);
+                var old = await _userRepository.GetByAny(x => x.Id == Id);
 
 
                 old.FullName = userDTO.FullName;
@@ -85,7 +86,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
                 old.Login = userDTO.Login;
                 old.Password = userDTO.Password;
                 old.Role = userDTO.Role;
-                
+
                 var result = await _userRepository.Update(old);
 
                 return result;
@@ -94,7 +95,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
         }
 
-        public async Task<UserModel> UpdateEmail(long Id, string email)
+        public async Task<UserModel> UpdateUserEmail(long Id, string email)
         {
             var res = await _userRepository.GetByAny(x => x.Id == Id);
 
@@ -112,12 +113,12 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return new UserModel();
         }
 
-        public async Task<string> UpdateOrder(string login,string ProductName,string description)
+        public async Task<string> UpdateUserOrder(string login, string ProductName, string description)
         {
-            if (await _productService.SelProduct(ProductName,description) != null)
+            if (await _productService.SelProduct(ProductName, description) != null)
             {
-                var result = await _userRepository.GetByAny(x=> x.Login == login);
-                if (result != null) 
+                var result = await _userRepository.GetByAny(x => x.Login == login);
+                if (result != null)
                 {
                     await _userRepository.Update(result);
                     return $"You bought {ProductName}";
@@ -127,13 +128,13 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return $"Product dosen't exist";
         }
 
-        public async Task<UserModel> UpdateLogin(long Id, string login)
+        public async Task<UserModel> UpdateUserLogin(long Id, string login)
         {
             var res = await _userRepository.GetByAny(x => x.Id == Id);
 
             if (res != null)
             {
-                if (await Check(null,login))
+                if (await Check(null, login))
                 {
                     res.Login = login;
                     var result = await _userRepository.Update(res);
@@ -145,7 +146,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return new UserModel();
         }
 
-        public async Task<UserModel> UpdateName(long Id, string fullname)
+        public async Task<UserModel> UpdateUserName(long Id, string fullname)
         {
             var res = await _userRepository.GetByAny(x => x.Id == Id);
 
@@ -159,13 +160,13 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return new UserModel();
         }
 
-        public async Task<UserModel> UpdatePassword(long Id, string password)
+        public async Task<UserModel> UpdateUserPassword(long Id, string password)
         {
             var res = await _userRepository.GetByAny(x => x.Id == Id);
 
             if (res != null)
             {
-                
+
                 res.Password = password;
                 var result = await _userRepository.Update(res);
 
@@ -173,26 +174,26 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             }
             return new UserModel();
         }
-        public async Task<bool> Delete(Expression<Func<UserModel, bool>> expression)
+        public async Task<bool> DeleteUser(Expression<Func<UserModel, bool>> expression)
         {
             var result = await _userRepository.Delete(expression);
 
             return result;
         }
-        public async Task<UserModel> GetByEmail(string email)
+        public async Task<UserModel> GetByUserEmail(string email)
         {
-            
+
             var result = await _userRepository.GetByAny(x => x.Email == email);
-            if (result != null) 
+            if (result != null)
             {
                 return result;
             }
             return null;
         }
-        public async Task<bool> Check(string email = null, string login = null) 
+        public async Task<bool> Check(string email = null, string login = null)
         {
             var result = await _userRepository.GetByAny(x => x.Email == email || x.Login == login);
-            if (result != null) 
+            if (result != null)
             {
                 return false;
             }

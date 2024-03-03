@@ -1,6 +1,6 @@
 ﻿using OrderManagementAPI.Domen.Entites.DTOs;
 using OrderManagementAPI.Domen.Entites.Models;
-using System.Linq.Expressions; 
+using System.Linq.Expressions;
 
 namespace OrderManagementAPI.Application.Abstractions.IService
 {

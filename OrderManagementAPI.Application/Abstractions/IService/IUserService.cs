@@ -7,16 +7,16 @@ namespace OrderManagementAPI.Application.Abstractions.IService
 {
     public interface IUserService
     {
-        public Task<UserModel> Create(UserDTO userDTO);
-        public Task<UserModel> GetById(long Id);
-        public Task<UserModel> GetByLogin(string login);
-        public Task<IEnumerable<UserViewModel>> GetAll();
-        public Task<UserModel> Update(long Id, UserDTO userDTO);
-        public Task<UserModel> UpdateName(long Id, string Fullname);
-        public Task<string> UpdateOrder(string login,string ordername,string discripthin);
-        public Task<UserModel> UpdateEmail(long Id, string Email);
-        public Task<UserModel> UpdatePassword(long Id, string Password);
-        public Task<UserModel> UpdateLogin(long Id, string login);
-        public Task<bool> Delete(Expression<Func<UserModel, bool>> expression);
+        public Task<UserModel> CreateUser(UserDTO userDTO);
+        public Task<UserModel> GetUserById(long Id);
+        public Task<UserModel> GetUserByLogin(string login);
+        public Task<IEnumerable<UserViewModel>> GetAllUser();
+        public Task<UserModel> UpdateUser(long Id, UserDTO userDTO);
+        public Task<UserModel> UpdateUserName(long Id, string Fullname);
+        public Task<string> UpdateUserOrder(string login, string ordername, string discripthin);
+        public Task<UserModel> UpdateUserEmail(long Id, string Email);
+        public Task<UserModel> UpdateUserPassword(long Id, string Password);
+        public Task<UserModel> UpdateUserLogin(long Id, string login);
+        public Task<bool> DeleteUser(Expression<Func<UserModel, bool>> expression);
     }
 }

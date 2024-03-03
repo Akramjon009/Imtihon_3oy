@@ -1,4 +1,6 @@
-﻿namespace OrderManagementAPI.Domen.Entites.ViewModel
+﻿using OrderManagementAPI.Domen.Entites.Enums;
+
+namespace OrderManagementAPI.Domen.Entites.ViewModel
 {
     public class UserViewModel
     {

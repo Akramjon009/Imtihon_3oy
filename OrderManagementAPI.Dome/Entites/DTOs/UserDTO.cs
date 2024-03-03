@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OrderManagementAPI.Domen.Entites.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace OrderManagementAPI.Domen.Entites.DTOs
 {

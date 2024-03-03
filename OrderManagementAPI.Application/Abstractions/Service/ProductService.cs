@@ -59,7 +59,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
                 res.Name = productDTO.Name;
                 res.Description = productDTO.Description;
                 res.Caunt = productDTO.Caunt;
-               
+
                 var result = await _productRepository.Update(res);
 
                 return result;
@@ -75,7 +75,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             {
 
                 res.Caunt = caunt;
-                
+
                 var result = await _productRepository.Update(res);
 
                 return result;
@@ -91,7 +91,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             {
 
                 res.Description = description;
-                
+
                 var result = await _productRepository.Update(res);
 
                 return result;
@@ -107,7 +107,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             {
 
                 res.Name = name;
-                
+
                 var result = await _productRepository.Update(res);
 
                 return result;
@@ -122,23 +122,23 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return result;
         }
 
-        public async Task<ProductModel> UpdateCountById(long Id,long count)
+        public async Task<ProductModel> UpdateCountById(long Id, long count)
         {
             var result = await _productRepository.GetByAny(x => x.Id == Id);
             if (result != null)
             {
-                result.Caunt=count;
-                return  await _productRepository.Update(result);
+                result.Caunt = count;
+                return await _productRepository.Update(result);
             }
             return new ProductModel();
         }
-        public async Task<ProductModel> SelProduct(string Name,string description)
+        public async Task<ProductModel> SelProduct(string Name, string description)
         {
-            var res = await _productRepository.GetByAny(x=> x.Name ==Name && x.Description==description);
+            var res = await _productRepository.GetByAny(x => x.Name == Name && x.Description == description);
 
             if (res != null && res.Caunt > 0)
             {
-                res.Caunt --; 
+                res.Caunt--;
                 return await _productRepository.Update(res);
             }
             return null;
