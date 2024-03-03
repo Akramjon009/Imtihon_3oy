@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace OrderManagementAPI.Attrebutes
 {
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class | AttributeTargets.Enum)]
+    [AttributeUsage(AttributeTargets.Method)]
     public class IdentityFilterAttribute : Attribute, IAuthorizationFilter
     {
         private readonly int _permissionId;

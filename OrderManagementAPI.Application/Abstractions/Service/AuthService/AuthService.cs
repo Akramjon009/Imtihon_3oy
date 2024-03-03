@@ -37,13 +37,13 @@ namespace OrderManagementAPI.Application.Abstractions.Service.AuthService
                 var result = await _userService.GetUserByLogin(user.Login);
                 var permission = new List<int>();
 
-                if (FindUser.Role.ToString() == "2")
+                if (FindUser.Role.ToString() == "Admin")
                 {
-                    permission = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11};
+                    permission = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11,20};
                 }
-                else if (FindUser.Role.ToString() == "1")
+                else if (FindUser.Role.ToString() == "User")
                 {
-                    permission = new List<int> { 12, 13, 14, 15, 16, 17, 18, 19, 20,21};
+                    +   permission = new List<int> { 20, 21 ,22,23,24,25,26,27,28,29};
                 }
                 var jsonContent = JsonSerializer.Serialize(permission);
 
