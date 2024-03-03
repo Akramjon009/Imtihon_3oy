@@ -11,8 +11,8 @@
         UpdateName=7,
         UpdateDescription=8,
         UpdateCaunt=9,
-        Delete=11,
-        GetPdfPath=12,
+        Delete=10,
+        GetPdfPath=11,
         //User service
         CreateUser=20,
         GetUserById=21,

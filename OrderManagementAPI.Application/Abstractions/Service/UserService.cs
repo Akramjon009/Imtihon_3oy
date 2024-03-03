@@ -7,7 +7,6 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using System.Linq.Expressions;
-using Document = QuestPDF.Fluent.Document;
 
 
 namespace OrderManagementAPI.Application.Abstractions.Service
@@ -206,28 +205,21 @@ namespace OrderManagementAPI.Application.Abstractions.Service
         }
         public async Task<string> GetPdfPath()
         {
+            var text = "|\t\tFullName\t\t|\t\tEmail\t\t|\t\tLogin\t\t|\n";
+            text += "___________________________________________________\n";
 
-            var text = "|\tFullName\t|\tEmail\t|\tLogin\t|\n";
-            text += "___________________________________________________";
+            var users = await _userRepository.GetAll();
 
-            var getall = await _userRepository.GetAll();
-
-            foreach (var user in getall.Where(x => x.Role.ToString() != "2"))
+            foreach (var user in users.Where(x => x.Role.ToString() != "Admin"))
             {
-                text += $" {user.FullName}|{user.Email}|{user.Login}\n";
-                text += "___________________________________________________";
+                text += $"| {user.FullName} | {user.Email} | {user.Login}|\n";
+                text += "___________________________________________________\n";
             }
 
+            DirectoryInfo projectDirectoryInfo = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent;
 
-
-
-            DirectoryInfo projectDirectoryInfo =
-            Directory.GetParent(Environment.CurrentDirectory).Parent.Parent;
-
-            var file = Guid.NewGuid().ToString();
-
-            string pdfsFolder = Directory.CreateDirectory(
-                 Path.Combine(projectDirectoryInfo.FullName, "pdfs")).FullName;
+            var fileName = Guid.NewGuid().ToString();
+            string pdfsFolder = Directory.CreateDirectory(Path.Combine(projectDirectoryInfo.FullName, "pdfs")).FullName;
 
             QuestPDF.Settings.License = LicenseType.Community;
 
@@ -238,32 +230,34 @@ namespace OrderManagementAPI.Application.Abstractions.Service
                     page.Size(PageSizes.A4);
                     page.Margin(2, Unit.Centimetre);
                     page.PageColor(Colors.White);
-                    page.DefaultTextStyle(x => x.FontSize(25));
+                    page.DefaultTextStyle(x => x.FontSize(20));
 
                     page.Header()
-                      .Text("Library Users")
-                      .SemiBold().FontSize(36).FontColor(Colors.Black);
+                        .Text("Library Users")
+                        .SemiBold().FontSize(36).FontColor(Colors.Blue.Medium);
 
                     page.Content()
-                      .PaddingVertical(1, Unit.Centimetre)
-                      .Column(x =>
-                      {
-                          x.Spacing(20);
+                        .PaddingVertical(1, Unit.Centimetre)
+                        .Column(x =>
+                        {
+                            x.Spacing(20);
 
-                          x.Item().Text(text);
-                      });
+                            x.Item().Text(text);
+                        });
 
                     page.Footer()
-                      .AlignCenter()
-                      .Text(x =>
-                      {
-                          x.Span("Page ");
-                          x.CurrentPageNumber();
-                      });
+                        .AlignCenter()
+                        .Text(x =>
+                        {
+                            x.Span("Page ");
+                            x.CurrentPageNumber();
+                        });
                 });
             })
-            .GeneratePdf(Path.Combine(pdfsFolder, $"{file}.pdf"));
-            return Path.Combine(pdfsFolder, $"{file}.pdf");
+            .GeneratePdf(Path.Combine(pdfsFolder, $"{fileName}.pdf"));
+
+            return Path.Combine(pdfsFolder, $"{fileName}.pdf");
         }
+
     }
 }
