@@ -55,13 +55,12 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
             if (res != null)
             {
-                var user = new ProductModel()
-                {
-                    Name = productDTO.Name,
-                    Description = productDTO.Description,
-                    Caunt = productDTO.Caunt
-                };
-                var result = await _productRepository.Update(user);
+
+                res.Name = productDTO.Name;
+                res.Description = productDTO.Description;
+                res.Caunt = productDTO.Caunt;
+               
+                var result = await _productRepository.Update(res);
 
                 return result;
             }
@@ -74,11 +73,10 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
             if (res != null)
             {
-                var user = new ProductModel()
-                {
-                    Caunt = caunt
-                };
-                var result = await _productRepository.Update(user);
+
+                res.Caunt = caunt;
+                
+                var result = await _productRepository.Update(res);
 
                 return result;
             }
@@ -91,11 +89,10 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
             if (res != null)
             {
-                var user = new ProductModel()
-                {
-                    Description = description
-                };
-                var result = await _productRepository.Update(user);
+
+                res.Description = description;
+                
+                var result = await _productRepository.Update(res);
 
                 return result;
             }
@@ -108,11 +105,10 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
             if (res != null)
             {
-                var user = new ProductModel()
-                {
-                    Name = name
-                };
-                var result = await _productRepository.Update(user);
+
+                res.Name = name;
+                
+                var result = await _productRepository.Update(res);
 
                 return result;
             }
@@ -126,22 +122,27 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return result;
         }
 
-        public async Task<ProductModel> UpdateCountByName(string Name)
+        public async Task<ProductModel> UpdateCountById(long Id,long count)
         {
-            var result = await _productRepository.GetByAny(x => x.Name == Name);
-            if (result != null && result.Caunt < 0)
+            var result = await _productRepository.GetByAny(x => x.Id == Id);
+            if (result != null)
             {
-                return await SelProduct(result.Caunt);
+                result.Caunt=count;
+                return  await _productRepository.Update(result);
             }
             return new ProductModel();
         }
-        public async Task<ProductModel> SelProduct(long product)
+        public async Task<ProductModel> SelProduct(string Name,string description)
         {
-            var user = new ProductModel()
+            var res = await _productRepository.GetByAny(x=> x.Name ==Name && x.Description==description);
+
+            if (res != null && res.Caunt > 0)
             {
-                Caunt = product - 1,
-            };
-            return await _productRepository.Update(user);
+                res.Caunt --; 
+                return await _productRepository.Update(res);
+            }
+            return null;
+
 
         }
     }

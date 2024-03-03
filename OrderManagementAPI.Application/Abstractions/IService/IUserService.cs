@@ -13,7 +13,7 @@ namespace OrderManagementAPI.Application.Abstractions.IService
         public Task<IEnumerable<UserViewModel>> GetAll();
         public Task<UserModel> Update(long Id, UserDTO userDTO);
         public Task<UserModel> UpdateName(long Id, string Fullname);
-        public Task<string> UpdateOrder(string ordername);
+        public Task<string> UpdateOrder(string login,string ordername,string discripthin);
         public Task<UserModel> UpdateEmail(long Id, string Email);
         public Task<UserModel> UpdatePassword(long Id, string Password);
         public Task<UserModel> UpdateLogin(long Id, string login);

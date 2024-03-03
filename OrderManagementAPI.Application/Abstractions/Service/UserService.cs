@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-using OrderManagementAPI.Application.Abstractions.IRepositories;
+﻿using OrderManagementAPI.Application.Abstractions.IRepositories;
 using OrderManagementAPI.Application.Abstractions.IService;
 using OrderManagementAPI.Domen.Entites.DTOs;
 using OrderManagementAPI.Domen.Entites.Models;
 using OrderManagementAPI.Domen.Entites.ViewModel;
 using System.Linq.Expressions;
-using System.Text;
+
 
 namespace OrderManagementAPI.Application.Abstractions.Service
 {
@@ -22,8 +21,8 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
         public async Task<UserModel> Create(UserDTO userDTO)
         {
-            var n = Check(userDTO.Email, userDTO.Login);
-            if (await n)
+            
+            if (await Check(userDTO.Email,userDTO.Login))
             {
                 var user = new UserModel()
                 {
@@ -61,8 +60,6 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             var user = await _userRepository.GetByAny(x => x.Id == Id);
             if (user != null)
             {
-
-
                 return user;
             }
             return null;
@@ -78,7 +75,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
         }
         public async Task<UserModel> Update(long Id, UserDTO userDTO)
         {
-            if (GetByEmail(userDTO.Email).ToString() == "null" && GetByLogin(userDTO.Login).ToString() == "null")
+            if (await Check(userDTO.Email, userDTO.Login))
             {
                 var old = await _userRepository.GetByAny(x=>x.Id == Id);
 
@@ -103,13 +100,10 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
             if (res != null)
             {
-                if (GetByEmail(res.Email) == null)
+                if (await Check(email))
                 {
-                    var user = new UserModel()
-                    {
-                        Email = email
-                    };
-                    var result = await _userRepository.Update(user);
+                    res.Email = email;
+                    var result = await _userRepository.Update(res);
 
                     return result;
                 }
@@ -118,11 +112,17 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return new UserModel();
         }
 
-        public async Task<string> UpdateOrder(string productname)
+        public async Task<string> UpdateOrder(string login,string ProductName,string description)
         {
-            if (await _productService.UpdateCountByName(productname) != new ProductModel())
+            if (await _productService.SelProduct(ProductName,description) != null)
             {
-                return $"You bought {productname}";
+                var result = await _userRepository.GetByAny(x=> x.Login == login);
+                if (result != null) 
+                {
+                    await _userRepository.Update(result);
+                    return $"You bought {ProductName}";
+                }
+                return "Login is wrong";
             }
             return $"Product dosen't exist";
         }
@@ -133,13 +133,10 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
             if (res != null)
             {
-                if (GetByLogin(login) == null)
+                if (await Check(null,login))
                 {
-                    var user = new UserModel()
-                    {
-                        Login = login
-                    };
-                    var result = await _userRepository.Update(user);
+                    res.Login = login;
+                    var result = await _userRepository.Update(res);
 
                     return result;
                 }
@@ -154,11 +151,8 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
             if (res != null)
             {
-                var user = new UserModel()
-                {
-                    FullName = fullname
-                };
-                var result = await _userRepository.Update(user);
+                res.FullName = fullname;
+                var result = await _userRepository.Update(res);
 
                 return result;
             }
@@ -171,11 +165,9 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
             if (res != null)
             {
-                var user = new UserModel()
-                {
-                    Password = password
-                };
-                var result = await _userRepository.Update(user);
+                
+                res.Password = password;
+                var result = await _userRepository.Update(res);
 
                 return result;
             }
@@ -197,7 +189,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             }
             return null;
         }
-        public async Task<bool> Check(string email, string login) 
+        public async Task<bool> Check(string email = null, string login = null) 
         {
             var result = await _userRepository.GetByAny(x => x.Email == email || x.Login == login);
             if (result != null) 

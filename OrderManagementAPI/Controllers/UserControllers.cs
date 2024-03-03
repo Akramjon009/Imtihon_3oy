@@ -73,10 +73,17 @@ namespace OrderManagementAPI.Controllers
             return Ok(result);
         }
         [HttpPatch]
-        public async Task<ActionResult<UserModel>> BuyProduct(string ProductName)
+        public async Task<ActionResult<UserModel>> BuyProduct(string login, string ProductName, string descripting)
         {
-            var result = await _userService.UpdateOrder(ProductName);
+            var result = await _userService.UpdateOrder(login,ProductName,descripting);
             return Ok(result);
+        
+        
+        
+        
+        
+        
+        
         }
 
 
