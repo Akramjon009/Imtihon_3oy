@@ -1,8 +1,7 @@
 ﻿namespace OrderManagementAPI.Domen.Entites.Enums
 {
     public enum Permission
-    {
-
+    { 
         Create = 1,
         GetById,
         GetAll,
@@ -13,6 +12,7 @@
         UpdateDescription,
         UpdateCaunt,
         Delete,
+        GetPdfPath,
         //User service
         CreateUser,
         GetUserById,

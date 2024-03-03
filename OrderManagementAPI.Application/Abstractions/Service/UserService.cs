@@ -3,7 +3,11 @@ using OrderManagementAPI.Application.Abstractions.IService;
 using OrderManagementAPI.Domen.Entites.DTOs;
 using OrderManagementAPI.Domen.Entites.Models;
 using OrderManagementAPI.Domen.Entites.ViewModel;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 using System.Linq.Expressions;
+using Document = QuestPDF.Fluent.Document;
 
 
 namespace OrderManagementAPI.Application.Abstractions.Service
@@ -199,6 +203,67 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             }
             return true;
 
+        }
+        public async Task<string> GetPdfPath()
+        {
+
+            var text = "|\tFullName\t|\tEmail\t|\tLogin\t|\n";
+            text += "___________________________________________________";
+
+            var getall = await _userRepository.GetAll();
+
+            foreach (var user in getall.Where(x => x.Role.ToString() != "2"))
+            {
+                text += $" {user.FullName}|{user.Email}|{user.Login}\n";
+                text += "___________________________________________________";
+            }
+
+
+
+
+            DirectoryInfo projectDirectoryInfo =
+            Directory.GetParent(Environment.CurrentDirectory).Parent.Parent;
+
+            var file = Guid.NewGuid().ToString();
+
+            string pdfsFolder = Directory.CreateDirectory(
+                 Path.Combine(projectDirectoryInfo.FullName, "pdfs")).FullName;
+
+            QuestPDF.Settings.License = LicenseType.Community;
+
+            Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4);
+                    page.Margin(2, Unit.Centimetre);
+                    page.PageColor(Colors.White);
+                    page.DefaultTextStyle(x => x.FontSize(25));
+
+                    page.Header()
+                      .Text("Library Users")
+                      .SemiBold().FontSize(36).FontColor(Colors.Black);
+
+                    page.Content()
+                      .PaddingVertical(1, Unit.Centimetre)
+                      .Column(x =>
+                      {
+                          x.Spacing(20);
+
+                          x.Item().Text(text);
+                      });
+
+                    page.Footer()
+                      .AlignCenter()
+                      .Text(x =>
+                      {
+                          x.Span("Page ");
+                          x.CurrentPageNumber();
+                      });
+                });
+            })
+            .GeneratePdf(Path.Combine(pdfsFolder, $"{file}.pdf"));
+            return Path.Combine(pdfsFolder, $"{file}.pdf");
         }
     }
 }

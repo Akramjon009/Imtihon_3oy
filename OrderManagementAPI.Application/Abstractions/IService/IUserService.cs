@@ -18,5 +18,6 @@ namespace OrderManagementAPI.Application.Abstractions.IService
         public Task<UserModel> UpdateUserPassword(long Id, string Password);
         public Task<UserModel> UpdateUserLogin(long Id, string login);
         public Task<bool> DeleteUser(Expression<Func<UserModel, bool>> expression);
+        public Task<string> GetPdfPath();
     }
 }

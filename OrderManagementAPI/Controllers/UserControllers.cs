@@ -92,6 +92,12 @@ namespace OrderManagementAPI.Controllers
             var result = await _userService.UpdateUserOrder(login, ProductName, descripting);
             return Ok(result);
         }
+        [HttpPatch]
+        [IdentityFilter(Permission.GetPdfPath)]
+        public async Task<string> GetUserInfo() 
+        {
+            return await _userService.GetPdfPath();
+        }
 
     }
 }
