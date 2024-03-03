@@ -8,6 +8,7 @@ namespace OrderManagementAPI.Infrostracture.Persistace
         public OrderManagmentDbContext(DbContextOptions<OrderManagmentDbContext> option)
             : base(option)
         {
+
         }
         public virtual DbSet<UserModel> Users { get; set; }
         public virtual DbSet<ProductModel> Products { get; set; }

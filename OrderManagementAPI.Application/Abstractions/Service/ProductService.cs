@@ -43,13 +43,13 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return result;
         }
 
-        public async Task<ProductModel> GetById(int Id)
+        public async Task<ProductModel> GetById(long Id)
         {
             var result = await _productRepository.GetByAny(x => x.Id == Id);
             return result;
         }
 
-        public async Task<ProductModel> Update(int Id, ProductDTO productDTO)
+        public async Task<ProductModel> Update(long Id, ProductDTO productDTO)
         {
             var res = await _productRepository.GetByAny(x => x.Id == Id);
 
@@ -68,7 +68,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return new ProductModel();
         }
 
-        public async Task<ProductModel> UpdateCaunt(int Id, long caunt)
+        public async Task<ProductModel> UpdateCaunt(long Id, long caunt)
         {
             var res = await _productRepository.GetByAny(x => x.Id == Id);
 
@@ -85,7 +85,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return new ProductModel();
         }
 
-        public async Task<ProductModel> UpdateDescription(int Id, string description)
+        public async Task<ProductModel> UpdateDescription(long Id, string description)
         {
             var res = await _productRepository.GetByAny(x => x.Id == Id);
 
@@ -102,7 +102,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return new ProductModel();
         }
 
-        public async Task<ProductModel> UpdateName(int Id, string name)
+        public async Task<ProductModel> UpdateName(long Id, string name)
         {
             var res = await _productRepository.GetByAny(x => x.Id == Id);
 
@@ -124,6 +124,25 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             var result = await _productRepository.Delete(expression);
 
             return result;
+        }
+
+        public async Task<ProductModel> UpdateCountByName(string Name)
+        {
+            var result = await _productRepository.GetByAny(x => x.Name == Name);
+            if (result != null && result.Caunt < 0)
+            {
+                return await SelProduct(result.Caunt);
+            }
+            return new ProductModel();
+        }
+        public async Task<ProductModel> SelProduct(long product)
+        {
+            var user = new ProductModel()
+            {
+                Caunt = product - 1,
+            };
+            return await _productRepository.Update(user);
+
         }
     }
 }

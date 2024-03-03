@@ -11,8 +11,8 @@ using OrderManagementAPI.Infrostracture.Persistace;
 namespace OrderManagementAPI.Infrostracture.Migrations
 {
     [DbContext(typeof(OrderManagmentDbContext))]
-    [Migration("20240302090149_nnn")]
-    partial class nnn
+    [Migration("20240303063949_a")]
+    partial class a
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,11 +32,10 @@ namespace OrderManagementAPI.Infrostracture.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("Count")
+                    b.Property<long>("Caunt")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -67,16 +66,14 @@ namespace OrderManagementAPI.Infrostracture.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Orders")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
