@@ -23,7 +23,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
         }
 
 
-        public async Task<UserModel> CreateUser(UserDTO userDTO)
+        public async Task<UserModel> CreateUser(UserDTO userDTO,string path)
         {
 
             if (await Check(userDTO.Email, userDTO.Login))
@@ -35,6 +35,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
                     Login = userDTO.Login,
                     Password = userDTO.Password,
                     Role = userDTO.Role,
+                    path = path
                 };
                 var result = await _userRepository.Create(user);
 
@@ -257,6 +258,17 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             .GeneratePdf(Path.Combine(pdfsFolder, $"{fileName}.pdf"));
 
             return Path.Combine(pdfsFolder, $"{fileName}.pdf");
+        }
+        public async Task<bool> UpdatePhoto(long id,string path) 
+        {
+            var result = await _userRepository.GetByAny(x => x.Id == id);
+            if (result != null)
+            {
+                result.path = path;
+                await _userRepository.Update(result);
+                return true;
+            }
+            return false;
         }
 
     }

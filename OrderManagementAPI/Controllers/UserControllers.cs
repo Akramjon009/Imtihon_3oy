@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderManagementAPI.Application.Abstractions.IService;
 using OrderManagementAPI.Attrebutes;
@@ -6,6 +7,7 @@ using OrderManagementAPI.Domen.Entites.DTOs;
 using OrderManagementAPI.Domen.Entites.Enums;
 using OrderManagementAPI.Domen.Entites.Models;
 using OrderManagementAPI.Domen.Entites.ViewModel;
+using OrderManagementAPI.ExternalServices;
 
 namespace OrderManagementAPI.Controllers
 {
@@ -15,17 +17,22 @@ namespace OrderManagementAPI.Controllers
     public class UserControllers : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UserControllers(IUserService userService)
+
+        public UserControllers(IUserService userService, IWebHostEnvironment webHostEnvironment)
         {
             _userService = userService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpPost]
         [IdentityFilter(Permission.CreateUser)]
-        public async Task<ActionResult<UserModel>> CreateUser(UserDTO userDTO)
+        public async Task<ActionResult<UserModel>> CreateUser([FromForm] UserDTO userDTO,IFormFile path)
         {
-            var result = await _userService.CreateUser(userDTO);
+            PictureExternalService service = new PictureExternalService(_webHostEnvironment);
+            string picturePath =await service.AddPictureAndGetPath(path);
+            var result = await _userService.CreateUser(userDTO,picturePath);
 
             return Ok(result);
         }
@@ -98,6 +105,16 @@ namespace OrderManagementAPI.Controllers
         {
             return await _userService.GetPdfPath();
         }
+        [HttpPatch]
+        [IdentityFilter(Permission.UpdatePohot)]
+        public async Task<bool> UpdatePhoto(long id, IFormFile path) 
+        {
+            PictureExternalService service = new PictureExternalService(_webHostEnvironment);
+            string picturePath = await service.AddPictureAndGetPath(path);
+            return await _userService.UpdatePhoto(id, picturePath);
+
+        }
+
 
     }
 }
