@@ -7,7 +7,7 @@ namespace OrderManagementAPI.Application.Abstractions.IService
 {
     public interface IUserService
     {
-        public Task<UserModel> CreateUser(UserDTO userDTO);
+        public Task<UserModel> CreateUser(UserDTO userDTO,string path);
         public Task<UserModel> GetUserById(long Id);
         public Task<UserModel> GetUserByLogin(string login);
         public Task<IEnumerable<UserViewModel>> GetAllUser();
@@ -19,5 +19,6 @@ namespace OrderManagementAPI.Application.Abstractions.IService
         public Task<UserModel> UpdateUserLogin(long Id, string login);
         public Task<bool> DeleteUser(Expression<Func<UserModel, bool>> expression);
         public Task<string> GetPdfPath();
+        public Task<bool> UpdatePhoto(long id,string path);
     }
 }

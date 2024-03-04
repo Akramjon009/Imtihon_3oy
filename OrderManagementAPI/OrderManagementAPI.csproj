@@ -22,4 +22,8 @@
     <ProjectReference Include="..\OrderManagementAPI.Infrostracture\OrderManagementAPI.Infrostracture.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>
