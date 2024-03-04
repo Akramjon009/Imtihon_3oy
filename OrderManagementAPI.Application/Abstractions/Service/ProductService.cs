@@ -115,9 +115,9 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return new ProductModel();
         }
 
-        public async Task<bool> Delete(Expression<Func<ProductModel, bool>> expression)
+        public async Task<bool> Delete(long id)
         {
-            var result = await _productRepository.Delete(expression);
+            var result = await _productRepository.Delete(x=> x.Id ==id);
 
             return result;
         }

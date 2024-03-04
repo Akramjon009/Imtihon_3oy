@@ -34,16 +34,16 @@ namespace OrderManagementAPI.Application.Abstractions.Service.AuthService
             var FindUser = await UserExist(user);
             if (FindUser != null)
             {
-                var result = await _userService.GetUserByLogin(user.Login);
+                var result = await _userService.InforToken(user.Login);
                 var permission = new List<int>();
 
                 if (FindUser.Role.ToString() == "Admin")
                 {
-                    permission = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11,21,22,23};
+                    permission = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11,21,22,23,30,31};
                 }
                 else if (FindUser.Role.ToString() == "User")
                 {
-                      permission = new List<int> { 20, 21 ,22,23,24,25,26,27,28,29,30};
+                      permission = new List<int> { 20, 21 ,22,23,24,25,26,27,28,29,30,31};
                 }
                 var jsonContent = JsonSerializer.Serialize(permission);
 
@@ -101,7 +101,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service.AuthService
         public async Task<UserModel> UserExist(RequestLogin user)
         {
 
-            var result = await _userService.GetUserByLogin(user.Login);
+            var result = await _userService.InforToken(user.Login);
 
             if (user.Login == result.Login && user.Password == result.Password)
             {

@@ -64,6 +64,7 @@ namespace OrderManagementAPI.Infrostracture.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Orders")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Password")
@@ -74,7 +75,6 @@ namespace OrderManagementAPI.Infrostracture.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("path")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");

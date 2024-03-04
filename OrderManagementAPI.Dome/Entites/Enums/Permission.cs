@@ -24,7 +24,7 @@
         UpdateUserEmail=27,
         UpdateUserPassword=28,
         UpdateUserLogin=29,
-        UpdateUserPhone=30,
-        UpdatePohot = 31,
+        UpdatePhoto=30,
+        DeleteUser=31,
     }
 }

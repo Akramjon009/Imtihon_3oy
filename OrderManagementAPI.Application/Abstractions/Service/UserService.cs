@@ -60,48 +60,64 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return result;
         }
 
-        public async Task<UserModel> GetUserById(long Id)
+        public async Task<UserViewModel> GetUserById(long Id)
         {
             var user = await _userRepository.GetByAny(x => x.Id == Id);
             if (user != null)
             {
-                return user;
+                var result = new UserViewModel()
+                {
+                    Name = user.FullName,
+                    Email = user.Email,
+                    Role = user.Role
+                };
+                return result;
             }
             return null;
         }
-        public async Task<UserModel> GetUserByLogin(string login)
+        public async Task<UserViewModel> GetUserByLogin(string login)
         {
             var user = await _userRepository.GetByAny(x => x.Login == login);
             if (user != null)
             {
-                return user;
+                var result = new UserViewModel()
+                {
+                    Name = user.FullName,
+                    Email = user.Email,
+                    Role = user.Role
+                };
+                return result;
             }
             return null;
         }
-        public async Task<UserModel> UpdateUser(long Id, UserDTO userDTO)
+        public async Task<UserModel> UpdateUser(long Id,string password, UserDTO userDTO)
         {
             if (await Check(userDTO.Email, userDTO.Login))
             {
-                var old = await _userRepository.GetByAny(x => x.Id == Id);
+                var old = await _userRepository.GetByAny(x => x.Id == Id && x.Password == password);
 
 
-                old.FullName = userDTO.FullName;
-                old.Email = userDTO.Email;
-                old.Login = userDTO.Login;
-                old.Password = userDTO.Password;
-                old.Role = userDTO.Role;
+                if (old != null)
+                {
+                    old.FullName = userDTO.FullName;
+                    old.Email = userDTO.Email;
+                    old.Login = userDTO.Login;
+                    old.Password = userDTO.Password;
+                    old.Role = userDTO.Role;
 
-                var result = await _userRepository.Update(old);
+                    var result = await _userRepository.Update(old);
 
-                return result;
+                    return result;
+                }
+                return null;
             }
-            return new UserModel();
+            return null;
 
         }
 
-        public async Task<UserModel> UpdateUserEmail(long Id, string email)
+        public async Task<UserModel> UpdateUserEmail(long Id, string password, string email)
         {
-            var res = await _userRepository.GetByAny(x => x.Id == Id);
+            var res = await _userRepository.GetByAny(x => x.Id == Id && x.Password == password);
 
             if (res != null)
             {
@@ -112,9 +128,9 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
                     return result;
                 }
-                return new UserModel();
+                return null;
             }
-            return new UserModel();
+            return null;
         }
 
         public async Task<string> UpdateUserOrder(string login, string ProductName, string description)
@@ -132,9 +148,9 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return $"Product dosen't exist";
         }
 
-        public async Task<UserModel> UpdateUserLogin(long Id, string login)
+        public async Task<UserModel> UpdateUserLogin(long Id,string password,string login)
         {
-            var res = await _userRepository.GetByAny(x => x.Id == Id);
+            var res = await _userRepository.GetByAny(x => x.Id == Id && x.Password == password);
 
             if (res != null)
             {
@@ -145,14 +161,14 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
                     return result;
                 }
-                return new UserModel();
+                return null;
             }
-            return new UserModel();
+            return null;
         }
 
-        public async Task<UserModel> UpdateUserName(long Id, string fullname)
+        public async Task<UserModel> UpdateUserName(long Id, string password, string fullname)
         {
-            var res = await _userRepository.GetByAny(x => x.Id == Id);
+            var res = await _userRepository.GetByAny(x => x.Id == Id && x.Password == password);
 
             if (res != null)
             {
@@ -161,12 +177,12 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
                 return result;
             }
-            return new UserModel();
+            return null;
         }
 
-        public async Task<UserModel> UpdateUserPassword(long Id, string password)
+        public async Task<UserModel> UpdateUserPassword(long Id, string password,string newpassword)
         {
-            var res = await _userRepository.GetByAny(x => x.Id == Id);
+            var res = await _userRepository.GetByAny(x => x.Id == Id && x.Password == password);
 
             if (res != null)
             {
@@ -176,11 +192,11 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
                 return result;
             }
-            return new UserModel();
+            return null;
         }
-        public async Task<bool> DeleteUser(Expression<Func<UserModel, bool>> expression)
+        public async Task<bool> DeleteUser(long id, string password)
         {
-            var result = await _userRepository.Delete(expression);
+            var result = await _userRepository.Delete(x=> x.Id == id && x.Password == password);
 
             return result;
         }
@@ -206,21 +222,23 @@ namespace OrderManagementAPI.Application.Abstractions.Service
         }
         public async Task<string> GetPdfPath()
         {
-            var text = "|\t\tFullName\t\t|\t\tEmail\t\t|\t\tLogin\t\t|\n";
-            text += "___________________________________________________\n";
+            string text = "";
 
             var users = await _userRepository.GetAll();
 
             foreach (var user in users.Where(x => x.Role.ToString() != "Admin"))
             {
-                text += $"| {user.FullName} | {user.Email} | {user.Login}|\n";
+                text += $"|Name: {user.FullName} |Email:{user.Email} |Login:{user.Login}|\n";
                 text += "___________________________________________________\n";
             }
 
-            DirectoryInfo projectDirectoryInfo = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent;
+            DirectoryInfo projectDirectoryInfo =
+           Directory.GetParent(Environment.CurrentDirectory).Parent.Parent;
 
-            var fileName = Guid.NewGuid().ToString();
-            string pdfsFolder = Directory.CreateDirectory(Path.Combine(projectDirectoryInfo.FullName, "pdfs")).FullName;
+            var file = Guid.NewGuid().ToString();
+
+            string pdfsFolder = Directory.CreateDirectory(
+                 Path.Combine(projectDirectoryInfo.FullName, "pdfs")).FullName;
 
             QuestPDF.Settings.License = LicenseType.Community;
 
@@ -234,30 +252,29 @@ namespace OrderManagementAPI.Application.Abstractions.Service
                     page.DefaultTextStyle(x => x.FontSize(20));
 
                     page.Header()
-                        .Text("Library Users")
-                        .SemiBold().FontSize(36).FontColor(Colors.Blue.Medium);
+                      .Text("Library Users")
+                      .SemiBold().FontSize(36).FontColor(Colors.Blue.Medium);
 
                     page.Content()
-                        .PaddingVertical(1, Unit.Centimetre)
-                        .Column(x =>
-                        {
-                            x.Spacing(20);
+                      .PaddingVertical(1, Unit.Centimetre)
+                      .Column(x =>
+                      {
+                          x.Spacing(20);
 
-                            x.Item().Text(text);
-                        });
+                          x.Item().Text(text);
+                      });
 
                     page.Footer()
-                        .AlignCenter()
-                        .Text(x =>
-                        {
-                            x.Span("Page ");
-                            x.CurrentPageNumber();
-                        });
+                      .AlignCenter()
+                      .Text(x =>
+                      {
+                          x.Span("Page ");
+                          x.CurrentPageNumber();
+                      });
                 });
             })
-            .GeneratePdf(Path.Combine(pdfsFolder, $"{fileName}.pdf"));
-
-            return Path.Combine(pdfsFolder, $"{fileName}.pdf");
+            .GeneratePdf(Path.Combine(pdfsFolder, $"{file}.pdf"));
+            return Path.Combine(pdfsFolder, $"{file}.pdf");
         }
         public async Task<bool> UpdatePhoto(long id,string path) 
         {
@@ -269,6 +286,16 @@ namespace OrderManagementAPI.Application.Abstractions.Service
                 return true;
             }
             return false;
+        }
+        public async Task<UserModel> InforToken(string login) 
+        {
+
+            var user = await _userRepository.GetByAny(x => x.Login == login);
+            if (user != null)
+            {
+                return user;
+            }
+            return null;
         }
 
     }

@@ -59,37 +59,37 @@ namespace OrderManagementAPI.Controllers
         }
         [HttpPut]
         [IdentityFilter(Permission.UpdateUser)]
-        public async Task<ActionResult<UserModel>> UpdateUser(long id, UserDTO userDTO)
+        public async Task<ActionResult<UserModel>> UpdateUser(long id,string password, UserDTO userDTO)
         {
-            var result = await _userService.UpdateUser(id, userDTO);
+            var result = await _userService.UpdateUser(id,password, userDTO);
             return Ok(result);
         }
         [HttpPatch]
         [IdentityFilter(Permission.UpdateUserName)]
-        public async Task<ActionResult<UserModel>> UpdateUserName(long id, string name)
+        public async Task<ActionResult<UserModel>> UpdateUserName(long id, string password, string name)
         {
-            var result = await _userService.UpdateUserName(id, name);
+            var result = await _userService.UpdateUserName(id, password, name);
             return Ok(result);
         }
         [HttpPatch]
         [IdentityFilter(Permission.UpdateUserEmail)]
-        public async Task<ActionResult<UserModel>> UpdateUserEmail(long id, string email)
+        public async Task<ActionResult<UserModel>> UpdateUserEmail(long id, string password, string email)
         {
-            var result = await _userService.UpdateUserEmail(id, email);
+            var result = await _userService.UpdateUserEmail(id, password, email);
             return Ok(result);
         }
         [HttpPatch]
         [IdentityFilter(Permission.UpdateUserLogin)]
-        public async Task<ActionResult<UserModel>> UpdateUserLogin(long id, string Login)
+        public async Task<ActionResult<UserModel>> UpdateUserLogin(long id, string password, string Login)
         {
-            var result = await _userService.UpdateUserLogin(id, Login);
+            var result = await _userService.UpdateUserLogin(id, password, Login);
             return Ok(result);
         }
         [HttpPatch]
         [IdentityFilter(Permission.UpdateUserPassword)]
-        public async Task<ActionResult<UserModel>> UpdateUserPassword(long id, string password)
+        public async Task<ActionResult<UserModel>> UpdateUserPassword(long id, string OldPassword, string NewPassword)
         {
-            var result = await _userService.UpdateUserPassword(id, password);
+            var result = await _userService.UpdateUserPassword(id, OldPassword,NewPassword);
             return Ok(result);
         }
         [HttpPatch]
@@ -106,15 +106,20 @@ namespace OrderManagementAPI.Controllers
             return await _userService.GetPdfPath();
         }
         [HttpPatch]
-        [IdentityFilter(Permission.UpdatePohot)]
+        [IdentityFilter(Permission.UpdatePhoto)]
         public async Task<bool> UpdatePhoto(long id, IFormFile path) 
         {
             PictureExternalService service = new PictureExternalService(_webHostEnvironment);
             string picturePath = await service.AddPictureAndGetPath(path);
             return await _userService.UpdatePhoto(id, picturePath);
 
+
         }
-
-
+        [HttpDelete]
+        [IdentityFilter(Permission.DeleteUser)]
+        public async Task<bool> DeleteUser(long id, string password) 
+        {
+            return await _userService.DeleteUser(id,password);
+        }
     }
 }

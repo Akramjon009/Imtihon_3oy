@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace OrderManagementAPI.Infrostracture.Migrations
 {
     /// <inheritdoc />
-    public partial class d : Migration
+    public partial class ok : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,7 @@ namespace OrderManagementAPI.Infrostracture.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
                     Caunt = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -37,6 +37,7 @@ namespace OrderManagementAPI.Infrostracture.Migrations
                     Login = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false),
                     Role = table.Column<int>(type: "integer", nullable: false),
+                    path = table.Column<string>(type: "text", nullable: true),
                     Orders = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
