@@ -12,8 +12,8 @@ using OrderManagementAPI.Infrostracture.Persistace;
 namespace OrderManagementAPI.Infrostracture.Migrations
 {
     [DbContext(typeof(OrderManagmentDbContext))]
-    [Migration("20240304010025_ok")]
-    partial class ok
+    [Migration("20240304044340_new")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,6 +43,16 @@ namespace OrderManagementAPI.Infrostracture.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<long>("SallerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("SallerName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("price")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.ToTable("Products");
@@ -66,8 +76,10 @@ namespace OrderManagementAPI.Infrostracture.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<long?>("Many")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Orders")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Password")

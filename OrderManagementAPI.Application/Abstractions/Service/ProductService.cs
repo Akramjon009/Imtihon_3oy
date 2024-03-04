@@ -9,23 +9,32 @@ namespace OrderManagementAPI.Application.Abstractions.Service
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
-
-        public ProductService(IProductRepository productrepository)
+        private readonly IUserRepository _userRepository;
+        public ProductService(IProductRepository productrepository, IUserRepository userRepository)
         {
             _productRepository = productrepository;
+            _userRepository = userRepository;
         }
 
-        public async Task<ProductModel> Create(ProductDTO productDTO)
+        public async Task<ProductModel> Create(ProductDTO productDTO,string Password)
         {
-            var user = new ProductModel()
+            var res = await _userRepository.GetByAny(x => x.FullName == productDTO.SellarName && x.Id == productDTO.SallerId && x.Password == Password);
+            if (res == null)
             {
-                Name = productDTO.Name,
-                Description = productDTO.Description,
-                Caunt = productDTO.Caunt
-            };
-            var result = await _productRepository.Create(user);
+                var user = new ProductModel()
+                {
+                    Name = productDTO.Name,
+                    Description = productDTO.Description,
+                    Caunt = productDTO.Caunt,
+                    SallerId = productDTO.SallerId,
+                    SallerName = productDTO.SellarName
 
-            return result;
+                };
+                var result = await _productRepository.Create(user);
+
+                return result;
+            }
+            return null;
         }
 
         public async Task<IEnumerable<ProductDTO>> GetAll()
@@ -43,107 +52,134 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return result;
         }
 
-        public async Task<ProductModel> GetById(long Id)
+        public async Task<ProductDTO> GetById(long Id)
         {
             var result = await _productRepository.GetByAny(x => x.Id == Id);
-            return result;
+            var user = new ProductDTO()
+            {
+                Name = result.Name,
+                SallerId= result.SallerId,
+                SellarName = result.SallerName,
+                Description = result.Description,
+                Caunt = result.Caunt 
+
+            };
+            return user;
         }
 
-        public async Task<ProductModel> Update(long Id, ProductDTO productDTO)
+        public async Task<ProductModel> Update(long id,string password,ProductDTO productDTO)
+        {
+            var res = await _productRepository.GetByAny(x => x.Id == id);
+
+            if (res != null)
+            {
+                var user = await _userRepository.GetByAny(x => x.Id == res.SallerId && x.Password == password);
+                if (user != null)
+                {
+                    res.Name = productDTO.Name;
+                    res.Description = productDTO.Description;
+                    res.Caunt = productDTO.Caunt;
+                    res.SallerName = productDTO.Name;   
+
+                    var result = await _productRepository.Update(res);
+
+                    return result;
+                }
+
+            }
+            return null;
+        }
+
+        public async Task<ProductModel> UpdateCaunt(long Id,string password, long caunt)
         {
             var res = await _productRepository.GetByAny(x => x.Id == Id);
 
             if (res != null)
             {
+                var user = await _userRepository.GetByAny(x => x.Id == res.SallerId && x.Password == password);
+                if (user != null)
+                {
+                    res.Caunt = caunt;
 
-                res.Name = productDTO.Name;
-                res.Description = productDTO.Description;
-                res.Caunt = productDTO.Caunt;
+                    var result = await _productRepository.Update(res);
 
-                var result = await _productRepository.Update(res);
-
-                return result;
+                    return result;
+                }
             }
-            return new ProductModel();
+            return null;
         }
 
-        public async Task<ProductModel> UpdateCaunt(long Id, long caunt)
+        public async Task<ProductModel> UpdateDescription(long Id,string password, string description)
         {
             var res = await _productRepository.GetByAny(x => x.Id == Id);
 
             if (res != null)
             {
+                var user = await _userRepository.GetByAny(y => y.Id == res.SallerId && y.Password == password);
+                if (user != null)
+                {
 
-                res.Caunt = caunt;
+                    res.Description = description;
 
-                var result = await _productRepository.Update(res);
+                    var result = await _productRepository.Update(res);
 
-                return result;
+                    return result;
+                }
             }
             return new ProductModel();
         }
 
-        public async Task<ProductModel> UpdateDescription(long Id, string description)
+        public async Task<ProductModel> UpdateName(long Id, string name,string password)
         {
             var res = await _productRepository.GetByAny(x => x.Id == Id);
 
             if (res != null)
             {
+                var result = await _userRepository.GetByAny(x => x.Id == res.SallerId && x.Password == password);
+                if (result != null)
+                {
 
-                res.Description = description;
+                    res.Name = name;
 
-                var result = await _productRepository.Update(res);
+                    var result2 = await _productRepository.Update(res);
 
-                return result;
-            }
-            return new ProductModel();
-        }
-
-        public async Task<ProductModel> UpdateName(long Id, string name)
-        {
-            var res = await _productRepository.GetByAny(x => x.Id == Id);
-
-            if (res != null)
-            {
-
-                res.Name = name;
-
-                var result = await _productRepository.Update(res);
-
-                return result;
-            }
-            return new ProductModel();
-        }
-
-        public async Task<bool> Delete(long id)
-        {
-            var result = await _productRepository.Delete(x=> x.Id ==id);
-
-            return result;
-        }
-
-        public async Task<ProductModel> UpdateCountById(long Id, long count)
-        {
-            var result = await _productRepository.GetByAny(x => x.Id == Id);
-            if (result != null)
-            {
-                result.Caunt = count;
-                return await _productRepository.Update(result);
+                    return result2;
+                }
             }
             return new ProductModel();
         }
         public async Task<ProductModel> SelProduct(string Name, string description)
         {
             var res = await _productRepository.GetByAny(x => x.Name == Name && x.Description == description);
-
-            if (res != null && res.Caunt > 0)
+            var seller = await _userRepository.GetByAny(x => x.Id == res.SallerId);
+            if (seller != null && res != null && res.Caunt > 0)
             {
+                    
                 res.Caunt--;
+                seller.Many = res.price - res.price / 100 *10;
+                await _userRepository.Update(seller);
                 return await _productRepository.Update(res);
+                
             }
             return null;
 
 
+        }
+
+        public async Task<bool> DeleteProduct(long id,string password)
+        {
+            var product = await _productRepository.GetByAny(x => x.Id == id);
+            if (product != null)
+            {
+
+                var result1 = await _userRepository.GetByAny(x => x.Id == product.SallerId && x.Password == password);
+                if (result1 != null)
+                {
+                    var result = await _productRepository.Delete(x => x.Id == id);
+                    return result;
+                }
+            }
+            return false;
         }
     }
 }

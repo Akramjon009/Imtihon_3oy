@@ -13,7 +13,7 @@ namespace OrderManagementAPI.Application.Abstractions.IService
         public Task<IEnumerable<UserViewModel>> GetAllUser();
         public Task<UserModel> UpdateUser(long Id, string password, UserDTO userDTO);
         public Task<UserModel> UpdateUserName(long Id, string password, string Fullname);
-        public Task<string> UpdateUserOrder(string login, string ordername, string discripthin);
+        public Task<string> UpdateUserOrder(string login, string password, string ProductName, string description);
         public Task<UserModel> UpdateUserEmail(long Id, string password, string Email);
         public Task<UserModel> UpdateUserPassword(long Id, string password, string Password);
         public Task<UserModel> UpdateUserLogin(long Id, string password, string login);
@@ -21,5 +21,7 @@ namespace OrderManagementAPI.Application.Abstractions.IService
         public Task<string> GetPdfPath();
         public Task<bool> UpdatePhoto(long id,string path);
         public Task<UserModel> InforToken(string login);
+        public Task<string> FillUp(long id, string password, long many);
+        public Task<string> GetMany(long id, string password);
     }
 }

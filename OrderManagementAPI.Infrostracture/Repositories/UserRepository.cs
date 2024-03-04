@@ -7,8 +7,7 @@ namespace OrderManagementAPI.Infrostracture.Repositories
     public class UserRepository : BaseRepository<UserModel>, IUserRepository
     {
         public UserRepository(OrderManagmentDbContext context) : base(context)
-        {
-
+        { 
         }
     }
 }

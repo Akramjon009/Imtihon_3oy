@@ -5,13 +5,12 @@
         Create = 1,
         GetById=2,
         GetAll=3,
-        UpdateCountById=4,
         SelProduct=5,
         Update=6,
         UpdateName=7,
         UpdateDescription=8,
         UpdateCaunt=9,
-        Delete=10,
+        DeleteProduct=10,
         GetPdfPath=11,
         //User service
         CreateUser=20,
@@ -26,5 +25,7 @@
         UpdateUserLogin=29,
         UpdatePhoto=30,
         DeleteUser=31,
+        FillUp =32,
+        GetMany=33
     }
 }

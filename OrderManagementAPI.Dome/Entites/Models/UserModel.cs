@@ -11,6 +11,7 @@ namespace OrderManagementAPI.Domen.Entites.Models
         public string Password { get; set; }
         public Role Role { get; set; }
         public string? path { get; set; }
-        public string Orders { get; set; }
+        public string? Orders { get; set; }
+        public long? Many { get; set; }
     }
 }

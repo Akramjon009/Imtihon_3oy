@@ -21,9 +21,9 @@ namespace OrderManagementAPI.Controllers
         }
         [HttpPost]
         [IdentityFilter(Permission.Create)]
-        public async Task<ActionResult<ProductModel>> CreateProduct(ProductDTO product)
+        public async Task<ActionResult<ProductModel>> CreateProduct(ProductDTO product,string password)
         {
-            var result = await _productService.Create(product);
+            var result = await _productService.Create(product,password);
             return Ok(result);
         }
         [HttpGet]
@@ -42,31 +42,37 @@ namespace OrderManagementAPI.Controllers
         }
         [HttpPut]
         [IdentityFilter(Permission.Update)]
-        public async Task<ActionResult<ProductModel>> UpdateAllUser(long id, ProductDTO product)
+        public async Task<ActionResult<ProductModel>> UpdateAllUser(long id,string password, ProductDTO product)
         {
-            var result = await _productService.Update(id, product);
+            var result = await _productService.Update(id,password,product);
             return Ok(result);
         }
         [HttpPatch]
         [IdentityFilter(Permission.UpdateName)]
-        public async Task<ActionResult<ProductModel>> UpdateProductName(long id, string productName)
+        public async Task<ActionResult<ProductModel>> UpdateProductName(long id, string password, string productName)
         {
-            var result = await _productService.UpdateName(id, productName);
+            var result = await _productService.UpdateName(id,password, productName);
             return Ok(result);
         }
         [HttpPatch]
         [IdentityFilter(Permission.UpdateDescription)]
-        public async Task<ActionResult<ProductModel>> UpdateProducDesctiption(long id, string productDescription)
+        public async Task<ActionResult<ProductModel>> UpdateProducDesctiption(long id, string password, string productDescription)
         {
-            var result = await _productService.UpdateDescription(id, productDescription);
+            var result = await _productService.UpdateDescription(id, password, productDescription);
             return Ok(result);
         }
         [HttpPatch]
         [IdentityFilter(Permission.UpdateCaunt)]
-        public async Task<ActionResult<ProductModel>> UpdateProducCaunt(long id, long caunt)
+        public async Task<ActionResult<ProductModel>> UpdateProducCaunt(long id,string password, long caunt)
         {
-            var result = await _productService.UpdateCaunt(id, caunt);
+            var result = await _productService.UpdateCaunt(id,password, caunt);
             return Ok(result);
+        }
+        [HttpDelete]
+        [IdentityFilter(Permission.DeleteProduct)]
+        public async Task<bool> DeleteProduct(long id,string password) 
+        {
+            return await _productService.DeleteProduct(id,password);
         }
 
     }

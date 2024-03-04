@@ -6,7 +6,7 @@ using OrderManagementAPI.Domen.Entites.ViewModel;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System.Linq.Expressions;
+using Document = QuestPDF.Fluent.Document;
 
 
 namespace OrderManagementAPI.Application.Abstractions.Service
@@ -35,7 +35,9 @@ namespace OrderManagementAPI.Application.Abstractions.Service
                     Login = userDTO.Login,
                     Password = userDTO.Password,
                     Role = userDTO.Role,
-                    path = path
+                    path = path,
+                    Many = userDTO.Many
+                    
                 };
                 var result = await _userRepository.Create(user);
 
@@ -104,6 +106,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
                     old.Login = userDTO.Login;
                     old.Password = userDTO.Password;
                     old.Role = userDTO.Role;
+                    old.Many = userDTO.Many;
 
                     var result = await _userRepository.Update(old);
 
@@ -133,17 +136,16 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return null;
         }
 
-        public async Task<string> UpdateUserOrder(string login, string ProductName, string description)
+        public async Task<string> UpdateUserOrder(string login,string password, string ProductName, string description)
         {
-            if (await _productService.SelProduct(ProductName, description) != null)
-            {
-                var result = await _userRepository.GetByAny(x => x.Login == login);
-                if (result != null)
-                {
+            var n = await _productService.SelProduct(ProductName, description);
+            var result = await _userRepository.GetByAny(x => x.Login == login && x.Password == password);
+            if (n != null && result!=null && result.Many > n.price)
+            {             
+                    result.Orders = n.Name;
+                    result.Many -= n.price; 
                     await _userRepository.Update(result);
                     return $"You bought {ProductName}";
-                }
-                return "Login is wrong";
             }
             return $"Product dosen't exist";
         }
@@ -297,6 +299,26 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             }
             return null;
         }
+        public async Task<string> FillUp(long id, string password, long many) 
+        {
+            var user = await _userRepository.GetByAny(x => x.Id == id && x.Password == password);
+            if (user != null) 
+            {
+                user.Many += many;
+                await _userRepository.Update(user);
+                return $"your account is full {user.Many}";
+            }
+            return "wrong";
+        }
+        public async Task<string> GetMany(long id, string password) 
+        {
+            var user = await _userRepository.GetByAny(x => x.Id == id && x.Password == password);
+            if(user != null) 
+            {
+                return $"You have {user.Many}$ ";
+            }
+            return "You id or password is wrong";
+        } 
 
     }
 }

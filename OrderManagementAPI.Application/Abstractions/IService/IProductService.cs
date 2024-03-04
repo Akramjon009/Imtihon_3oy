@@ -6,15 +6,15 @@ namespace OrderManagementAPI.Application.Abstractions.IService
 {
     public interface IProductService
     {
-        public Task<ProductModel> Create(ProductDTO productDTO);
-        public Task<ProductModel> GetById(long Id);
+        public Task<ProductModel> Create(ProductDTO productDTO, string Password);
         public Task<IEnumerable<ProductDTO>> GetAll();
-        public Task<ProductModel> UpdateCountById(long id, long count);
+        public Task<ProductDTO> GetById(long Id);
+        public Task<ProductModel> Update(long id, string password, ProductDTO productDTO);
+        public Task<ProductModel> UpdateCaunt(long Id, string password, long caunt);
+        public Task<ProductModel> UpdateDescription(long Id, string password, string description);
+        public Task<ProductModel> UpdateName(long Id, string name, string password);
         public Task<ProductModel> SelProduct(string Name, string description);
-        public Task<ProductModel> Update(long Id, ProductDTO productDTO);
-        public Task<ProductModel> UpdateName(long Id, string Name);
-        public Task<ProductModel> UpdateDescription(long Id, string description);
-        public Task<ProductModel> UpdateCaunt(long Id, long caunt);
-        public Task<bool> Delete(Expression<Func<ProductModel, bool>> expression);
+        public Task<bool> DeleteProduct(long id, string password);
+
     }
 }

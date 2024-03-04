@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace OrderManagementAPI.Infrostracture.Migrations
 {
     /// <inheritdoc />
-    public partial class ok : Migration
+    public partial class @new : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,9 +17,12 @@ namespace OrderManagementAPI.Infrostracture.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SallerId = table.Column<long>(type: "bigint", nullable: false),
+                    SallerName = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
-                    Caunt = table.Column<long>(type: "bigint", nullable: false)
+                    Caunt = table.Column<long>(type: "bigint", nullable: false),
+                    price = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -38,7 +41,8 @@ namespace OrderManagementAPI.Infrostracture.Migrations
                     Password = table.Column<string>(type: "text", nullable: false),
                     Role = table.Column<int>(type: "integer", nullable: false),
                     path = table.Column<string>(type: "text", nullable: true),
-                    Orders = table.Column<string>(type: "text", nullable: false)
+                    Orders = table.Column<string>(type: "text", nullable: true),
+                    Many = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {

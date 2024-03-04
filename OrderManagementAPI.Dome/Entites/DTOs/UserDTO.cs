@@ -1,5 +1,6 @@
 ﻿using OrderManagementAPI.Domen.Entites.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks.Dataflow;
 
 namespace OrderManagementAPI.Domen.Entites.DTOs
 {
@@ -14,5 +15,6 @@ namespace OrderManagementAPI.Domen.Entites.DTOs
         [MinLength(8)]
         public string Password { get; set; }
         public Role Role { get; set; }
+        public long Many {  get; set; }
     }
 }

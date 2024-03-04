@@ -40,6 +40,16 @@ namespace OrderManagementAPI.Infrostracture.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<long>("SallerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("SallerName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("price")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.ToTable("Products");
@@ -63,8 +73,10 @@ namespace OrderManagementAPI.Infrostracture.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<long?>("Many")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Orders")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Password")

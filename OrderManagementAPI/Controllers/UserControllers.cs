@@ -8,13 +8,15 @@ using OrderManagementAPI.Domen.Entites.Enums;
 using OrderManagementAPI.Domen.Entites.Models;
 using OrderManagementAPI.Domen.Entites.ViewModel;
 using OrderManagementAPI.ExternalServices;
+using System.Runtime.CompilerServices;
 
 namespace OrderManagementAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize]
-    public class UserControllers : ControllerBase
+    public class UserControllers : ControllerBase 
+
     {
         private readonly IUserService _userService;
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -43,6 +45,14 @@ namespace OrderManagementAPI.Controllers
             var result = await _userService.GetAllUser();
             return Ok(result);
         }
+        [HttpGet]
+        [IdentityFilter(Permission.GetMany)]
+        public async Task<string> GetMany(long id, string password) 
+        {
+            var result = await _userService.GetMany(id, password);
+            return result;
+        }
+
         [HttpGet]
         [IdentityFilter(Permission.GetUserById)]
         public async Task<ActionResult<IEnumerable<UserViewModel>>> GetUserById(long id)
@@ -94,9 +104,9 @@ namespace OrderManagementAPI.Controllers
         }
         [HttpPatch]
         [IdentityFilter(Permission.UpdateUserOrder)]
-        public async Task<ActionResult<UserModel>> BuyProduct(string login, string ProductName, string descripting)
+        public async Task<ActionResult<UserModel>> BuyProduct(string login,string password, string ProductName, string descripting)
         {
-            var result = await _userService.UpdateUserOrder(login, ProductName, descripting);
+            var result = await _userService.UpdateUserOrder(login,password, ProductName, descripting);
             return Ok(result);
         }
         [HttpPatch]
