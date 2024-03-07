@@ -19,7 +19,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
         public async Task<ProductModel> Create(ProductDTO productDTO,string Password)
         {
             var res = await _userRepository.GetByAny(x => x.FullName == productDTO.SellarName && x.Id == productDTO.SallerId && x.Password == Password);
-            if (res == null)
+            if (res != null)
             {
                 var user = new ProductModel()
                 {
@@ -85,6 +85,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
                     return result;
                 }
+                return null;
 
             }
             return null;
@@ -105,6 +106,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
                     return result;
                 }
+                return null;
             }
             return null;
         }
@@ -125,8 +127,9 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
                     return result;
                 }
+                return null;
             }
-            return new ProductModel();
+            return null;
         }
 
         public async Task<ProductModel> UpdateName(long Id, string name,string password)
@@ -145,9 +148,31 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
                     return result2;
                 }
+                return null;
             }
-            return new ProductModel();
+            return null;
         }
+        public async Task<ProductModel> UpdatePrice(long Id, string password ,long price)
+        {
+            var res = await _productRepository.GetByAny(x => x.Id == Id);
+
+            if (res != null)
+            {
+                var result = await _userRepository.GetByAny(x => x.Id == res.SallerId && x.Password == password);
+                if (result != null)
+                {
+
+                    res.price= price;
+
+                    var result2 = await _productRepository.Update(res);
+
+                    return result2;
+                }
+                return null;
+            }
+            return null;
+        }
+
         public async Task<ProductModel> SelProduct(string Name, string description)
         {
             var res = await _productRepository.GetByAny(x => x.Name == Name && x.Description == description);
@@ -178,6 +203,7 @@ namespace OrderManagementAPI.Application.Abstractions.Service
                     var result = await _productRepository.Delete(x => x.Id == id);
                     return result;
                 }
+                return false;
             }
             return false;
         }

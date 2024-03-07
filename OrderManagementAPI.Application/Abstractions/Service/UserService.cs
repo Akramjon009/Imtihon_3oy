@@ -77,6 +77,19 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             }
             return null;
         }
+        public async Task<string> GetPicture(string Login)
+        {
+            var result = await _userRepository.GetByAny(x => x.Login == Login);
+            if (result != null) 
+            {
+                if (result.path != null) 
+                {
+                    return result.path;
+                }
+                return null;
+            }
+            return null;
+        }
         public async Task<UserViewModel> GetUserByLogin(string login)
         {
             var user = await _userRepository.GetByAny(x => x.Login == login);
@@ -92,11 +105,11 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             }
             return null;
         }
-        public async Task<UserModel> UpdateUser(long Id,string password, UserDTO userDTO)
+        public async Task<UserModel> UpdateUser(long Id,string Login, UserDTO userDTO)
         {
             if (await Check(userDTO.Email, userDTO.Login))
             {
-                var old = await _userRepository.GetByAny(x => x.Id == Id && x.Password == password);
+                var old = await _userRepository.GetByAny(x => x.Id == Id && x.Password == Login);
 
 
                 if (old != null)
@@ -118,9 +131,9 @@ namespace OrderManagementAPI.Application.Abstractions.Service
 
         }
 
-        public async Task<UserModel> UpdateUserEmail(long Id, string password, string email)
+        public async Task<UserModel> UpdateUserEmail(long Id, string Login, string email)
         {
-            var res = await _userRepository.GetByAny(x => x.Id == Id && x.Password == password);
+            var res = await _userRepository.GetByAny(x => x.Id == Id && x.Password == Login);
 
             if (res != null)
             {
@@ -136,10 +149,10 @@ namespace OrderManagementAPI.Application.Abstractions.Service
             return null;
         }
 
-        public async Task<string> UpdateUserOrder(string login,string password, string ProductName, string description)
+        public async Task<string> UpdateUserOrder(string login,string Password, string ProductName, string description)
         {
             var n = await _productService.SelProduct(ProductName, description);
-            var result = await _userRepository.GetByAny(x => x.Login == login && x.Password == password);
+            var result = await _userRepository.GetByAny(x => x.Login == login && x.Password == Password);
             if (n != null && result!=null && result.Many > n.price)
             {             
                     result.Orders = n.Name;

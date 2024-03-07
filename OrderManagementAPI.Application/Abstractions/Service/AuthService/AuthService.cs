@@ -39,15 +39,15 @@ namespace OrderManagementAPI.Application.Abstractions.Service.AuthService
 
                 if (FindUser.Role.ToString() == "Admin")
                 {
-                    permission = new List<int> { 2,3,10,11,20,21,22,23,24,25,26,27,28,29,30,31 };
+                    permission = new List<int> { 2,3,10,22,11,23,24,25,26,27,28,29,30,31 };
                 }
                 else if (FindUser.Role.ToString() == "User")
                 {
-                    permission = new List<int> { 20, 21, 22, 24, 25, 26, 27, 28, 29, 30, 31,32,33};
+                    permission = new List<int> { 24,22,25, 26, 27, 28, 29, 30, 31,32,33};
                 }
                 else if (FindUser.Role.ToString() == "OrderManagement")
                 {
-                    permission = new List<int> { 1,2,3,5,6,7,8,9,10,20,21,22,24,25,26,27,28,29,30,31,33};
+                    permission = new List<int> { 1,2,3,22,5,6,7,8,9,10,24,25,26,27,28,29,30,31,33,34};
                 }
                 var jsonContent = JsonSerializer.Serialize(permission);
 

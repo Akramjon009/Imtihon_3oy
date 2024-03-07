@@ -1,4 +1,5 @@
-﻿using OrderManagementAPI.Domen.Entites.DTOs;
+﻿using OrderManagementAPI.Application.Abstractions.IRepositories;
+using OrderManagementAPI.Domen.Entites.DTOs;
 using OrderManagementAPI.Domen.Entites.Models;
 using System.Linq.Expressions;
 
@@ -15,6 +16,7 @@ namespace OrderManagementAPI.Application.Abstractions.IService
         public Task<ProductModel> UpdateName(long Id, string name, string password);
         public Task<ProductModel> SelProduct(string Name, string description);
         public Task<bool> DeleteProduct(long id, string password);
+        public Task<ProductModel> UpdatePrice(long Id, string password, long price);
 
     }
 }

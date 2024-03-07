@@ -74,6 +74,12 @@ namespace OrderManagementAPI.Controllers
         {
             return await _productService.DeleteProduct(id,password);
         }
+        [HttpPatch]
+        [IdentityFilter(Permission.UpdatePrice)]
+        public async Task<ProductModel> UpdatePrice(long Id,  string password,long price)
+        {
+            return await _productService.UpdatePrice(Id, password, price);
+        }
 
     }
 }

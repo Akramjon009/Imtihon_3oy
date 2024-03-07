@@ -1,4 +1,5 @@
-﻿using OrderManagementAPI.Domen.Entites.DTOs;
+﻿using OrderManagementAPI.Application.Abstractions.IRepositories;
+using OrderManagementAPI.Domen.Entites.DTOs;
 using OrderManagementAPI.Domen.Entites.Models;
 using OrderManagementAPI.Domen.Entites.ViewModel;
 using System.Linq.Expressions;
@@ -23,5 +24,9 @@ namespace OrderManagementAPI.Application.Abstractions.IService
         public Task<UserModel> InforToken(string login);
         public Task<string> FillUp(long id, string password, long many);
         public Task<string> GetMany(long id, string password);
+        public Task<string> GetPicture(string Login);
+
+
+
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderManagementAPI.Application.Abstractions.IService;
 using OrderManagementAPI.Attrebutes;
@@ -29,7 +28,6 @@ namespace OrderManagementAPI.Controllers
         }
 
         [HttpPost]
-        [IdentityFilter(Permission.CreateUser)]
         public async Task<ActionResult<UserModel>> CreateUser([FromForm] UserDTO userDTO,IFormFile path)
         {
             PictureExternalService service = new PictureExternalService(_webHostEnvironment);
@@ -54,14 +52,12 @@ namespace OrderManagementAPI.Controllers
         }
 
         [HttpGet]
-        [IdentityFilter(Permission.GetUserById)]
         public async Task<ActionResult<IEnumerable<UserViewModel>>> GetUserById(long id)
         {
             var result = await _userService.GetUserById(id);
             return Ok(result);
         }
         [HttpGet]
-        [IdentityFilter(Permission.GetUserByLogin)]
         public async Task<ActionResult<IEnumerable<UserViewModel>>> GetUserByLogin(string login)
         {
             var result = await _userService.GetUserByLogin(login);
@@ -130,6 +126,18 @@ namespace OrderManagementAPI.Controllers
         public async Task<bool> DeleteUser(long id, string password) 
         {
             return await _userService.DeleteUser(id,password);
+        }
+        [HttpGet]
+        [IdentityFilter(Permission.GetPicture)]
+        public async Task<IActionResult> GetPicture(string login)
+        {
+            var path = await _userService.GetPicture(login);
+            if (path != null) 
+            {
+                var fileBytes = System.IO.File.ReadAllBytes(path);
+                return File(fileBytes, "image/jpeg");
+            }
+            return Ok("User dosn't have photo");
         }
     }
 }

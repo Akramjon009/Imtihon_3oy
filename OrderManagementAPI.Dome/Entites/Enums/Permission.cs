@@ -1,4 +1,6 @@
-﻿namespace OrderManagementAPI.Domen.Entites.Enums
+﻿using OrderManagementAPI.Domen.Entites.Models;
+
+namespace OrderManagementAPI.Domen.Entites.Enums
 {
     public enum Permission
     { 
@@ -13,10 +15,8 @@
         DeleteProduct=10,
         GetPdfPath=11,
         //User service
-        CreateUser=20,
-        GetUserById=21,
-        GetUserByLogin=22,
-        GetAllUser=23,
+        GetPicture =22,
+        GetAllUser =23,
         UpdateUser=24,
         UpdateUserName=25,
         UpdateUserOrder=26,
@@ -26,6 +26,7 @@
         UpdatePhoto=30,
         DeleteUser=31,
         FillUp =32,
-        GetMany=33
+        GetMany=33,
+        UpdatePrice=34
     }
 }
